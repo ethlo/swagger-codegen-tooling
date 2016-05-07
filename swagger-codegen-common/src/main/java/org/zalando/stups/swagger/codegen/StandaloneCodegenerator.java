@@ -154,7 +154,7 @@ public class StandaloneCodegenerator {
 
         try {
             clientOptInput.opts(clientOpts).swagger(swagger);
-
+            
             final DefaultGenerator generator = (DefaultGenerator) new DefaultGenerator().opts(clientOptInput);
             final List<File> generatedFiles = generator.generate();
             getLog().info(generatedFiles.size() + " generated Files");

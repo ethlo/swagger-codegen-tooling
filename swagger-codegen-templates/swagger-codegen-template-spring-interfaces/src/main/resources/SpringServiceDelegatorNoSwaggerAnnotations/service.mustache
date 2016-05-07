@@ -1,0 +1,20 @@
+package {{package}};
+
+import {{modelPackage}}.*;
+
+{{#imports}}import {{import}};
+{{/imports}}
+
+//
+// GENERATED CLASS, DO NOT EDIT
+//
+public interface {{classname}}Service
+{
+{{#operations}}
+{{#operation}}
+
+  {{>returnTypes}} {{nickname}}({{>extraParams}}{{#allParams}}{{{dataType}}} {{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}});
+
+{{/operation}}
+}
+{{/operations}}

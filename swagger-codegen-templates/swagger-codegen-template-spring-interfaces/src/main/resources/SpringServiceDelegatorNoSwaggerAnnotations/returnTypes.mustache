@@ -1,0 +1,1 @@
+{{#returnContainer}}{{#isMapContainer}}Map<String, {{{returnType}}}>{{/isMapContainer}}{{#isListContainer}}org.springframework.data.domain.Page<{{{returnType}}}>{{/isListContainer}}{{/returnContainer}}{{^returnContainer}}{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}}{{/returnContainer}}
