@@ -41,7 +41,7 @@ public class SpringServiceDelegatorNoSwaggerAnnotations extends AbstractSpringIn
 
     @Override
     public String getName() {
-        return "springServiceDelegatorNoSwaggerAnnotations";
+        return "SpringServiceDelegatorNoSwaggerAnnotations";
     }
 
     @Override
@@ -164,4 +164,14 @@ public class SpringServiceDelegatorNoSwaggerAnnotations extends AbstractSpringIn
 		}
 		return super.postProcessOperations(objs);
 	}
+	
+	@Override
+    public String toApiName(String name) {
+        if (name.length() == 0) {
+            return "DefaultController";
+        }
+
+        name = sanitizeName(name);
+        return camelize(name) + "Controller";
+    }
 }
