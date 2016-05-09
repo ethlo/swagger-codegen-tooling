@@ -24,27 +24,25 @@ import org.springframework.web.bind.annotation.RestController;
 
 {{#operations}}
 @RestController
-public class {{classname}} {
-
-private final {{classname}}Service service;
-
-@org.springframework.beans.factory.annotation.Autowired
-public {{classname}}({{classname}}Service service)
+public class {{classname}}
 {
+  private final {{classname}}Service service;
+
+  @org.springframework.beans.factory.annotation.Autowired
+  public {{classname}}({{classname}}Service service)
+  {
 	org.springframework.util.Assert.notNull(service, "service cannot be null");
 	this.service = service;
-}
+  }
 
 {{#operation}}
   {{>apidoc}}
   {{>secured}}
   @RequestMapping(value="/{{baseName}}{{path}}",method=RequestMethod.{{httpMethod}}{{#hasConsumes}},consumes={ {{#consumes}}"{{mediaType}}"{{#hasMore}},{{/hasMore}}{{/consumes}} }{{/hasConsumes}} {{#hasProduces}}, produces={ {{#produces}}"{{mediaType}}"{{#hasMore}}, {{/hasMore}}{{/produces}} }{{/hasProduces}})
-  public {{>returnTypes}} {{nickname}}({{>extraParams}}{{#allParams}}{{>queryParams}}{{>pathParams}}{{>headerParams}}{{>bodyParams}}{{>formParams}}{{#hasMore}},
-    {{/hasMore}}{{/allParams}})
-    {
-    	return service.{{nickname}}({{#vendorExtensions}}{{#x-params}}{{{baseName}}},{{/x-params}}{{/vendorExtensions}}{{#allParams}}{{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}});
-    }
-
+  public {{>returnTypes}} {{nickname}}({{>extraParams}}{{#allParams}}{{>queryParams}}{{>pathParams}}{{>headerParams}}{{>bodyParams}}{{>formParams}}{{#hasMore}},{{/hasMore}}{{/allParams}})
+  {
+    	return service.{{nickname}}({{#vendorExtensions}}{{#x-params}}{{{baseName}}}{{#hasMore}}, {{/hasMore}}{{/x-params}}{{/vendorExtensions}}{{#allParams}}{{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}});
+  }
 {{/operation}}
 }
 {{/operations}}

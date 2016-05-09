@@ -27,6 +27,17 @@ import com.google.common.collect.Lists;
 public class SpringInterfacesGeneratorTest {
 
     @Test
+    public void myTestGenerationFromYaml() throws CodegenerationException {
+        StandaloneCodegenerator generator = StandaloneCodegenerator.builder().withApiFile(new File("/Users/mha/Documents/kezzler/gitrepo/ssp/core-api/src/main/resources/api.yml"))
+                                                                   .forLanguage("SpringServiceDelegatorNoSwaggerAnnotations")
+                                                                   .withApiPackage("de.zalando.swagger.api")
+                                                                   .withModelPackage("de.zalando.swagger.model")
+                                                                   .writeResultsTo(new File("/tmp/api")).build();
+
+        generator.generate();
+    }
+	
+    @Test
     public void testGenerationFromJson() throws CodegenerationException {
         StandaloneCodegenerator generator = StandaloneCodegenerator.builder().withApiFile(getApiJsonFile())
                                                                    .forLanguage("springinterfaces")
@@ -222,7 +233,7 @@ public class SpringInterfacesGeneratorTest {
 
     protected File generateOutputDir() {
         File userDir = new File(System.getProperty("user.dir"));
-        File outputDirectory = new File(userDir, "/target/" + UUID.randomUUID().toString());
+        File outputDirectory = new File(userDir, "/target/out");
         if (!outputDirectory.mkdirs()) {
             System.out.println("NOT_CREATED at " + outputDirectory.getAbsolutePath());
         }

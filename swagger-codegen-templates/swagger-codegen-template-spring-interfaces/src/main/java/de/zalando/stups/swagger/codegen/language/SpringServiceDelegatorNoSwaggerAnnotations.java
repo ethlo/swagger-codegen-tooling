@@ -100,10 +100,11 @@ public class SpringServiceDelegatorNoSwaggerAnnotations extends AbstractSpringIn
             List<CodegenOperation> ops = (List<CodegenOperation>) operations.get("operation");
             for (CodegenOperation op : ops)
             {
+        		final List<CodegenParameter> extraParams = new LinkedList<>();
+            	
             	final List<ObjectNode> extraArgs = (List<ObjectNode>) op.vendorExtensions.get("x-params");
             	if (extraArgs != null)
             	{
-            		final List<CodegenParameter> extraParams = new LinkedList<>();
 	            	for (ObjectNode extraArg : extraArgs)
 	            	{
 	            		final Entry<String, JsonNode> pair = extraArg.fields().next();
@@ -111,9 +112,9 @@ public class SpringServiceDelegatorNoSwaggerAnnotations extends AbstractSpringIn
 	            		param.baseName = pair.getKey();
 	            		param.dataType = pair.getValue().textValue();
 	            		param.description = "Implementation specific parameter";
+	            		param.hasMore = true;
 	            		extraParams.add(param);
 	            	}
-	            	op.vendorExtensions.put("x-params", extraParams);
             	}
             	
 				final List<String> expressions = new LinkedList<>();
@@ -160,8 +161,53 @@ public class SpringServiceDelegatorNoSwaggerAnnotations extends AbstractSpringIn
 						op.vendorExtensions.put("x-postAuthorize", "hasPermission(returnObject, '" + permission + "')");
 					}
 				}
+				
+				// Change page/size/sort to Pageable if requested
+				if (Boolean.valueOf(op.vendorExtensions.containsKey("x-pageable")))
+				{
+					CodegenParameter page = null;
+					CodegenParameter size = null;
+					CodegenParameter sort = null;
+					for (CodegenParameter param : op.allParams)
+					{
+						if (param.baseName.equals("page"))
+						{
+							page = param;
+						}
+						
+						if (param.baseName.equals("size"))
+						{
+							size = param;
+						}
+						
+						if (param.baseName.equals("sort"))
+						{
+							sort = param;
+						}
+					}
+
+					op.queryParams.remove(page);
+					op.queryParams.remove(size);
+					op.queryParams.remove(sort);
+					op.allParams.remove(page);
+					op.allParams.remove(size);
+					op.allParams.remove(sort);
+					
+					final CodegenParameter param = new CodegenParameter();
+            		param.baseName = "pageable";
+            		param.dataType = "org.springframework.data.domain.Pageable";
+            		param.description = "Implementation specific parameter";
+            		param.hasMore = true;
+            		//param.isBodyParam = true;
+            		extraParams.add(param);
+				}
+				
+				// Last should not have more results if no other parameters
+				extraParams.get(extraParams.size() - 1).hasMore = !op.allParams.isEmpty();
+				op.vendorExtensions.put("x-params", extraParams);
 			}
 		}
+        
 		return super.postProcessOperations(objs);
 	}
 	
